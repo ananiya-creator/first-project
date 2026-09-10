@@ -1,0 +1,527 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>HomeBroker Realty | Find Your Dream Home</title>
+  <!-- Tailwind CSS + Font Awesome + Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    /* custom carousel styles */
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 1rem;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      will-change: transform;
+    }
+    .carousel-slide {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      position: relative;
+    }
+    .carousel-slide img {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      display: block;
+    }
+    .carousel-caption {
+      position: absolute;
+      bottom: 28px;
+      left: 0;
+      right: 0;
+      background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%);
+      color: white;
+      padding: 1rem 2rem;
+      text-align: left;
+      backdrop-filter: blur(2px);
+    }
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.55);
+      color: white;
+      border: none;
+      font-size: 1.8rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .carousel-btn:hover {
+      background: #1e3a8a;
+      transform: translateY(-50%) scale(1.05);
+    }
+    .btn-prev {
+      left: 20px;
+    }
+    .btn-next {
+      right: 20px;
+    }
+    .carousel-dots {
+      position: absolute;
+      bottom: 16px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      z-index: 10;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      background-color: rgba(255,255,255,0.6);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dot.active {
+      background-color: #2563eb;
+      transform: scale(1.2);
+      box-shadow: 0 0 0 2px white;
+    }
+    /* table responsive */
+    .responsive-table {
+      overflow-x: auto;
+    }
+    .property-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .property-table th, .property-table td {
+      padding: 14px 12px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .property-table th {
+      background-color: #f8fafc;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .property-table tr:hover {
+      background-color: #f1f5f9;
+      transition: 0.2s;
+    }
+    .btn-submit {
+      transition: all 0.2s ease;
+    }
+    .btn-submit:hover {
+      background-color: #1e40af;
+      transform: translateY(-1px);
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      ring: 2px solid #3b82f6;
+      border-color: #3b82f6;
+    }
+    /* custom smooth scroll */
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-gray-100 text-gray-800">
+
+  <!-- Header & Navigation (Links included) -->
+  <header class="bg-white shadow-md sticky top-0 z-30">
+    <div class="container mx-auto px-5 py-4 flex flex-wrap justify-between items-center">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-home text-blue-700 text-3xl"></i>
+        <span class="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-800 to-indigo-700 bg-clip-text text-transparent">HomeBroker</span>
+        <span class="text-sm font-medium text-gray-500 hidden sm:inline-block">| Real Estate</span>
+      </div>
+      <nav class="flex gap-6 text-gray-700 font-medium">
+        <a href="#" class="hover:text-blue-700 transition flex items-center gap-1"><i class="fas fa-compass"></i> Explore</a>
+        <a href="#listings" class="hover:text-blue-700 transition flex items-center gap-1"><i class="fas fa-table-list"></i> Listings</a>
+        <a href="#contact" class="hover:text-blue-700 transition flex items-center gap-1"><i class="fas fa-envelope"></i> Contact</a>
+        <a href="#" class="hover:text-blue-700 transition flex items-center gap-1"><i class="fas fa-phone-alt"></i> (888) 321-7654</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 md:px-6 py-8 max-w-7xl">
+
+    <!-- HERO / SLIDES SECTION (carousel) -->
+    <section class="mb-14">
+      <div class="carousel-container" id="heroCarousel">
+        <div class="carousel-track" id="carouselTrack">
+          <!-- Slide 1 -->
+          <div class="carousel-slide">
+            <img src="https://picsum.photos/id/104/1600/600" alt="Modern luxury house" loading="lazy">
+            <div class="carousel-caption">
+              <h2 class="text-2xl md:text-3xl font-bold drop-shadow-lg">Modern Waterfront Estate</h2>
+              <p class="text-base md:text-lg">4 Beds | 3.5 Baths | Pool & Garden — $1,250,000</p>
+            </div>
+          </div>
+          <!-- Slide 2 -->
+          <div class="carousel-slide">
+            <img src="https://picsum.photos/id/106/1600/600" alt="Cozy mountain retreat" loading="lazy">
+            <div class="carousel-caption">
+              <h2 class="text-2xl md:text-3xl font-bold drop-shadow-lg">Cozy Mountain Cabin</h2>
+              <p class="text-base md:text-lg">3 Beds | 2 Baths | Fireplace & Panoramic Views — $649,000</p>
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div class="carousel-slide">
+            <img src="https://picsum.photos/id/169/1600/600" alt="Urban contemporary apartment" loading="lazy">
+            <div class="carousel-caption">
+              <h2 class="text-2xl md:text-3xl font-bold drop-shadow-lg">Downtown Skyline Loft</h2>
+              <p class="text-base md:text-lg">2 Beds | 2 Baths | Smart Home — $895,000</p>
+            </div>
+          </div>
+        </div>
+        <!-- Prev/Next Buttons -->
+        <button class="carousel-btn btn-prev" id="prevSlide"><i class="fas fa-chevron-left"></i></button>
+        <button class="carousel-btn btn-next" id="nextSlide"><i class="fas fa-chevron-right"></i></button>
+        <!-- Dots navigation -->
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+      <div class="text-center mt-4">
+        <a href="#" class="inline-flex items-center gap-2 text-blue-700 font-semibold hover:underline"><i class="fas fa-arrow-right"></i> View all featured properties <i class="fas fa-external-link-alt text-xs"></i></a>
+      </div>
+    </section>
+
+    <!-- TABLE SECTION: Featured Listings (Table + Links inside) -->
+    <section id="listings" class="mb-14 scroll-mt-20">
+      <div class="flex flex-wrap justify-between items-center border-b border-gray-200 pb-3 mb-5">
+        <h2 class="text-3xl font-bold flex items-center gap-2"><i class="fas fa-building text-blue-600"></i> Premium Listings</h2>
+        <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium bg-blue-50 px-4 py-1.5 rounded-full transition"><i class="fas fa-chart-line"></i> Market insights →</a>
+      </div>
+      <div class="bg-white rounded-2xl shadow-md p-1 md:p-2 responsive-table">
+        <table class="property-table">
+          <thead>
+            <tr>
+              <th>Address / Property</th>
+              <th>Price</th>
+              <th>Bed/Bath</th>
+              <th>Sq Ft</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="font-medium">🌳 123 Elmwood Drive, Springfield</td>
+              <td class="text-indigo-700 font-semibold">$475,000</td>
+              <td>4 / 2.5</td>
+              <td>2,340</td>
+              <td><a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"><i class="fas fa-info-circle"></i> Details →</a></td>
+            </tr>
+            <tr>
+              <td class="font-medium">🏔 852 Alpine Ridge, Aspen Valley</td>
+              <td class="text-indigo-700 font-semibold">$1,190,000</td>
+              <td>5 / 3</td>
+              <td>3,200</td>
+              <td><a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"><i class="fas fa-info-circle"></i> Details →</a></td>
+            </tr>
+            <tr>
+              <td class="font-medium">🏙 407 Metro Loft, Downtown Hub</td>
+              <td class="text-indigo-700 font-semibold">$699,000</td>
+              <td>2 / 2</td>
+              <td>1,450</td>
+              <td><a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"><i class="fas fa-info-circle"></i> Details →</a></td>
+            </tr>
+            <tr>
+              <td class="font-medium">🌊 15 Seascape Villa, Malibu Coast</td>
+              <td class="text-indigo-700 font-semibold">$2,450,000</td>
+              <td>6 / 4.5</td>
+              <td>4,850</td>
+              <td><a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"><i class="fas fa-info-circle"></i> Details →</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="flex justify-end mt-4 gap-4">
+        <a href="#" class="text-sm text-gray-500 hover:text-blue-700 underline flex items-center gap-1"><i class="fas fa-search"></i> Search all listings</a>
+        <a href="#" class="text-sm text-gray-500 hover:text-blue-700 underline flex items-center gap-1"><i class="fas fa-chart-simple"></i> Compare properties</a>
+      </div>
+    </section>
+
+    <!-- LINKS SECTION (extra links - services & resources) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
+      <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100 transition hover:shadow-md">
+        <i class="fas fa-hand-holding-usd text-3xl text-blue-600 mb-3"></i>
+        <h3 class="text-xl font-bold">Mortgage Calculator</h3>
+        <p class="text-gray-500 text-sm mt-1">Estimate your monthly payments instantly.</p>
+        <a href="#" class="inline-block mt-3 text-blue-600 font-medium">Try tool <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100 transition hover:shadow-md">
+        <i class="fas fa-file-signature text-3xl text-blue-600 mb-3"></i>
+        <h3 class="text-xl font-bold">Sell With Us</h3>
+        <p class="text-gray-500 text-sm mt-1">Get a free home valuation & listing strategy.</p>
+        <a href="#" class="inline-block mt-3 text-blue-600 font-medium">Learn more →</a>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100 transition hover:shadow-md">
+        <i class="fas fa-map-marked-alt text-3xl text-blue-600 mb-3"></i>
+        <h3 class="text-xl font-bold">Neighborhood Guides</h3>
+        <p class="text-gray-500 text-sm mt-1">Explore top-rated schools & amenities.</p>
+        <a href="#" class="inline-block mt-3 text-blue-600 font-medium">Discover <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+      </div>
+    </div>
+
+    <!-- FORM SECTION (contact & inquiry) -->
+    <section id="contact" class="scroll-mt-20 bg-white rounded-2xl shadow-xl overflow-hidden mb-14">
+      <div class="grid md:grid-cols-2">
+        <div class="bg-gradient-to-br from-blue-900 to-indigo-800 p-8 text-white flex flex-col justify-center">
+          <i class="fas fa-comment-dots text-4xl mb-4"></i>
+          <h2 class="text-3xl font-bold">Talk to a Broker</h2>
+          <p class="mt-3 opacity-90 leading-relaxed">Need expert advice? Fill out the form and our HomeBroker specialists will reach out within 24 hours.</p>
+          <div class="mt-6 space-y-3 text-sm">
+            <div><i class="fas fa-phone-alt mr-2"></i> (888) 321-7654</div>
+            <div><i class="fas fa-envelope mr-2"></i> hello@homebroker.com</div>
+            <div><i class="fas fa-clock mr-2"></i> Mon-Fri: 9AM – 7PM</div>
+          </div>
+          <!-- extra link -->
+          <a href="#" class="mt-6 inline-flex items-center gap-1 text-white underline underline-offset-2 hover:text-blue-200"><i class="fas fa-calendar-alt"></i> Schedule virtual tour</a>
+        </div>
+        <div class="p-8 md:p-10">
+          <h3 class="text-2xl font-semibold text-gray-800 flex items-center gap-2"><i class="fas fa-pen-alt text-blue-600"></i> Request a Viewing</h3>
+          <p class="text-gray-500 mb-6">Let’s find your perfect home — fill the quick form.</p>
+          <form id="contactForm" action="#" method="post" class="space-y-5">
+            <div>
+              <label class="block text-gray-700 font-medium mb-1">Full Name *</label>
+              <input type="text" required id="fullName" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition" placeholder="James Carter">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-medium mb-1">Email Address *</label>
+              <input type="email" required id="emailAddr" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition" placeholder="hello@example.com">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-medium mb-1">Phone (optional)</label>
+              <input type="tel" id="phoneNum" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition" placeholder="+1 555 987 6543">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-medium mb-1">Message / Property Interest *</label>
+              <textarea rows="3" required id="messageText" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition" placeholder="I'm interested in... e.g., Modern Waterfront Estate or other listings..."></textarea>
+            </div>
+            <button type="submit" class="btn-submit w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2"><i class="fas fa-paper-plane"></i> Send Request</button>
+            <p class="text-xs text-gray-400 text-center mt-2">By submitting, you agree to our <a href="#" class="underline">Privacy Policy</a>.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADDITIONAL LINK ROW (footer links) -->
+    <footer class="border-t border-gray-200 pt-8 pb-6 text-center text-gray-500 text-sm">
+      <div class="flex flex-wrap justify-center gap-6 mb-4">
+        <a href="#" class="hover:text-blue-700 transition"><i class="fab fa-facebook-f mr-1"></i> Facebook</a>
+        <a href="#" class="hover:text-blue-700 transition"><i class="fab fa-instagram mr-1"></i> Instagram</a>
+        <a href="#" class="hover:text-blue-700 transition"><i class="fab fa-linkedin-in mr-1"></i> LinkedIn</a>
+        <a href="#" class="hover:text-blue-700 transition"><i class="fas fa-blog"></i> Blog</a>
+        <a href="#" class="hover:text-blue-700 transition"><i class="fas fa-shield-alt"></i> Fair Housing</a>
+      </div>
+      <p>&copy; 2025 HomeBroker Real Estate — Your trusted home partner. All rights reserved.</p>
+      <p class="mt-1">📍 Virtual tours available | <a href="#" class="underline hover:text-blue-800">Accessibility</a></p>
+    </footer>
+  </main>
+
+  <script>
+    (function() {
+      // ---------- CAROUSEL LOGIC (sileds / slides) ----------
+      const track = document.getElementById('carouselTrack');
+      const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+      const prevBtn = document.getElementById('prevSlide');
+      const nextBtn = document.getElementById('nextSlide');
+      const dotsContainer = document.getElementById('carouselDots');
+      let currentIndex = 0;
+      let autoInterval;
+      const totalSlides = slides.length;
+      
+      // Create dots
+      function createDots() {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < totalSlides; i++) {
+          const dot = document.createElement('div');
+          dot.classList.add('dot');
+          if (i === currentIndex) dot.classList.add('active');
+          dot.addEventListener('click', () => goToSlide(i));
+          dotsContainer.appendChild(dot);
+        }
+      }
+      
+      function updateDots() {
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((dot, idx) => {
+          if (idx === currentIndex) dot.classList.add('active');
+          else dot.classList.remove('active');
+        });
+      }
+      
+      function updateCarousel() {
+        const slideWidth = slides[0].clientWidth;
+        track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+        updateDots();
+      }
+      
+      function goToSlide(index) {
+        if (index < 0) index = 0;
+        if (index >= totalSlides) index = totalSlides - 1;
+        currentIndex = index;
+        updateCarousel();
+        resetAutoPlay();
+      }
+      
+      function nextSlide() {
+        if (currentIndex + 1 < totalSlides) {
+          currentIndex++;
+        } else {
+          currentIndex = 0; // loop back to first
+        }
+        updateCarousel();
+        resetAutoPlay();
+      }
+      
+      function prevSlide() {
+        if (currentIndex - 1 >= 0) {
+          currentIndex--;
+        } else {
+          currentIndex = totalSlides - 1; // loop to last
+        }
+        updateCarousel();
+        resetAutoPlay();
+      }
+      
+      function startAutoPlay() {
+        if (autoInterval) clearInterval(autoInterval);
+        autoInterval = setInterval(() => {
+          nextSlide();
+        }, 5500);
+      }
+      
+      function resetAutoPlay() {
+        if (autoInterval) clearInterval(autoInterval);
+        startAutoPlay();
+      }
+      
+      // Event listeners
+      prevBtn.addEventListener('click', prevSlide);
+      nextBtn.addEventListener('click', nextSlide);
+      window.addEventListener('resize', () => {
+        updateCarousel();
+      });
+      
+      // Initialize carousel
+      createDots();
+      updateCarousel();
+      startAutoPlay();
+      
+      // Pause auto on hover over carousel (nice UX)
+      const carouselContainer = document.getElementById('heroCarousel');
+      carouselContainer.addEventListener('mouseenter', () => {
+        if (autoInterval) clearInterval(autoInterval);
+      });
+      carouselContainer.addEventListener('mouseleave', () => {
+        startAutoPlay();
+      });
+      
+      // ---------- FORM HANDLING (no backend, just demo) ----------
+      const contactForm = document.getElementById('contactForm');
+      if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const name = document.getElementById('fullName')?.value.trim();
+          const email = document.getElementById('emailAddr')?.value.trim();
+          const message = document.getElementById('messageText')?.value.trim();
+          
+          if (!name || !email || !message) {
+            alert('❌ Please fill in all required fields (Name, Email, Message).');
+            return;
+          }
+          if (!email.includes('@') || !email.includes('.')) {
+            alert('📧 Please enter a valid email address.');
+            return;
+          }
+          
+          // Success simulation
+          alert(`✅ Thank you ${name}! A HomeBroker agent will contact you shortly at ${email}. We've received your inquiry.`);
+          contactForm.reset();
+        });
+      }
+      
+      // optional table link details dummy behavior (keep interactive but no page reloads)
+      const allTableLinks = document.querySelectorAll('.property-table a');
+      allTableLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const rowText = link.closest('tr')?.querySelector('td:first-child')?.innerText || 'property';
+          alert(`✨ More details about "${rowText}" — Schedule a private tour! Contact our agents.`);
+        });
+      });
+      
+      // additional card links demo
+      const extraCardLinks = document.querySelectorAll('.bg-white.rounded-xl a, .flex.justify-end a, .carousel-caption + div a');
+      const demoLinks = document.querySelectorAll('a[href="#"]:not(.property-table a)'); // generic demo
+      demoLinks.forEach(link => {
+        // avoid double on table links already handled
+        if (link.closest('.property-table')) return;
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href');
+          if (href === '#') {
+            e.preventDefault();
+            if (link.innerText.includes('Mortgage') || link.innerText.includes('Calculator')) {
+              alert('📊 Mortgage Calculator Demo: Estimate monthly payments. (Full tool coming soon)');
+            } else if (link.innerText.includes('Sell With Us') || link.innerText.includes('valuation')) {
+              alert('🏡 Sell your home with HomeBroker — request a free comparative market analysis today!');
+            } else if (link.innerText.includes('Neighborhood Guides')) {
+              alert('📍 Explore our curated guides for best neighborhoods, schools, and lifestyle.');
+            } else if (link.innerText.includes('Market insights')) {
+              alert('📈 Real estate trends: median prices up 5.2% year-over-year. Check our full report.');
+            } else if (link.innerText.includes('Search all listings')) {
+              alert('🔍 Advanced search with 500+ active listings. Use filters: price, beds, location.');
+            } else if (link.innerText.includes('Schedule virtual tour')) {
+              alert('🎥 Book a live video tour with an agent — pick a time slot that fits you.');
+            } else {
+              alert('🔗 Thanks for exploring! Our team will get back with more details.');
+            }
+          }
+        });
+      });
+      
+      // For the "Details →" inside table we already handled, but also for any other "Learn more" link:
+      const otherDemoLinks = document.querySelectorAll('.bg-white.rounded-xl a, .text-blue-600.font-medium');
+      otherDemoLinks.forEach(ln => {
+        if (ln.closest('.property-table')) return;
+        if (ln.getAttribute('href') === '#') {
+          ln.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (ln.innerText.includes('Try tool')) alert('💡 Mortgage calculator coming soon! Use our preliminary estimation: $2,300/month estimated.');
+            else if (ln.innerText.includes('Learn more')) alert('📄 Access exclusive seller resources and staging advice. Connect now!');
+            else if (ln.innerText.includes('Discover')) alert('🏙️ Check out top neighborhoods: Downtown, Lakeview, and Hillside.');
+            else alert('✨ More info available. Talk to our real estate concierge!');
+          });
+        }
+      });
+      
+      // small fix to avoid duplicate alert on some links from footer
+      const footerLinks = document.querySelectorAll('footer a');
+      footerLinks.forEach(fl => {
+        fl.addEventListener('click', (e) => {
+          if (fl.getAttribute('href') === '#') {
+            e.preventDefault();
+            alert('📢 HomeBroker — we are committed to excellence. Follow us for updates!');
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
